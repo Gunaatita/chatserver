@@ -1,0 +1,63 @@
+<html>
+<head>
+<script type="text/javascript">
+function initchat(){
+	websocket = new WebSocket("ws://localhost:8181/chat");
+    websocket.onopen = function (evt) {
+        onOpen(evt)
+    };
+    websocket.onclose = function (evt) {
+        onClose(evt)
+    };
+    websocket.onmessage = function (evt) {
+        onMessage(evt)
+    };
+    websocket.onerror = function (evt) {
+        onError(evt)
+    };
+}
+function onMessage(evt){
+    var openElement = document.createElement("p");
+    openElement.innerHTML =  "Suresh: "+evt.data;
+    var chatElem = document.getElementById("chatarea");
+    var chatbox = document.getElementById("chatbox");
+    chatElem.insertBefore(openElement,chatbox);
+}
+function onOpen(evt){
+	var openElement = document.createElement("p");
+	openElement.innerHTML = "connected to server"
+	var chatElem = document.getElementById("chatarea");
+    var chatbox = document.getElementById("chatbox");
+	chatElem.insertBefore(openElement,chatbox);
+}
+function onClose(evt){
+	var closeElement = document.createElement("p");
+	closeElement.innerHTML = "disconnectedd from server"
+    document.getElementById("chatarea").appendChild(closeElement);
+}
+function onError(evt){
+    var closeElement = document.createElement("p");
+    closeElement.innerHTML = "Error: "+evt.data;
+    document.getElementById("chatarea").appendChild(closeElement);
+}
+function sendMessage(){
+	
+	    var chatbox = document.getElementById("chatbox");
+	var message = chatbox.value;
+	websocket.send(message);
+	
+	 var openElement = document.createElement("p");
+     openElement.innerHTML =  "Ramesh: "+message;
+     var chatElem = document.getElementById("chatarea");
+     chatElem.insertBefore(openElement,chatbox);
+     chatbox.value = "";
+}
+</script>
+</head>
+<body>
+<input type="button" value="start chat" onclick="javascript:initchat()"/>
+<div id="chatarea">
+<textarea id="chatbox"></textarea><input type="button" value="send" onclick="javascript:sendMessage()"/>
+</div>
+</body>
+</html>
